@@ -1,5 +1,7 @@
 package model
 
+import "errors"
+
 type Todo struct {
 	Id      string
 	Content string
@@ -19,9 +21,24 @@ type InMemoryTodoRepository struct {
 func (repository *InMemoryTodoRepository) GetAllTodo() ([]*Todo, error) {
 	return repository.database, nil
 }
-func (repository *InMemoryTodoRepository) GetTodo(id string) (*Todo, error) { return nil, nil }
+
+func (repository *InMemoryTodoRepository) GetTodo(id string) (*Todo, error) {
+	database := repository.database
+
+	for _, todo := range database {
+		if todo.Id == id {
+			return todo, nil
+		}
+	}
+	return &Todo{}, errors.New("todo entry do not found")
+}
+
 func (repository *InMemoryTodoRepository) SaveTodo(todo Todo) error {
 	repository.database = append(repository.database, &todo)
 	return nil
 }
-func (repository *InMemoryTodoRepository) RemoveTodo(todo Todo) error { return nil }
+
+func (repository *InMemoryTodoRepository) RemoveTodo(todo Todo) error {
+
+	return nil
+}
