@@ -6,9 +6,9 @@ POST http://localhost:8000/todo
 Content-Type: application/json
 
 {
-  "id":"1",
+  "id":5,
   "content": "a content for a new example"
 }
 ###
 
-DELETE http://localhost:8000/todo/id
+DELETE http://localhost:8000/todo/5

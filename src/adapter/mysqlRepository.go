@@ -46,10 +46,28 @@ func (repository *MySqlTodoRepository) GetTodo(id int64) (*model.Todo, error) {
 }
 
 func (repository *MySqlTodoRepository) SaveTodo(todo *model.Todo) error {
+	database, err := sql.Open("mysql", repository.ConnectionString)
+	errorLog(err)
+
+	query, _ := database.Prepare("INSERT into TODO (id, content) VALUES (?, ?)")
+	rows, err := query.Query(todo.Id, todo.Content)
+	errorLog(err)
+
+	closeResources(rows, query, database)
+
 	return nil
 }
 
 func (repository *MySqlTodoRepository) RemoveTodo(id int64) error {
+	database, err := sql.Open("mysql", repository.ConnectionString)
+	errorLog(err)
+
+	query, _ := database.Prepare("DELETE FROM TODO WHERE id=?")
+	rows, err := query.Query(id)
+	errorLog(err)
+
+	closeResources(rows, query, database)
+
 	return nil
 }
 
