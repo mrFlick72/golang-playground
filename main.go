@@ -4,20 +4,18 @@ import (
 	"fmt"
 	"githab/mrflick72/go-playground/src/model"
 	"githab/mrflick72/go-playground/src/web"
-	"github.com/gorilla/mux"
-	"net/http"
+	"github.com/labstack/echo"
 )
 
 func main() {
 	repository := model.InMemoryTodoRepository{}
-	endpoint := web.TodoEndPoint{TodoRepository: &repository}
 
+	server := echo.New()
 	initDatabase(&repository)
 
-	router := mux.NewRouter()
-	router.Handle("/todos", endpoint)
-	router.HandleFunc("/echo", web.HandleEcho)
-	http.ListenAndServe(":3000", router)
+	web.Endpoints(server, &repository)
+
+	server.Start(":8000")
 }
 
 func initDatabase(repository *model.InMemoryTodoRepository) {
