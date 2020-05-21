@@ -11,7 +11,7 @@ type TodoRepository interface {
 	GetAllTodo() ([]*Todo, error)
 	GetTodo(id string) (*Todo, error)
 	SaveTodo(todo Todo) error
-	RemoveTodo(todo Todo) error
+	RemoveTodo(id string) error
 }
 
 type InMemoryTodoRepository struct {
@@ -38,7 +38,14 @@ func (repository *InMemoryTodoRepository) SaveTodo(todo Todo) error {
 	return nil
 }
 
-func (repository *InMemoryTodoRepository) RemoveTodo(todo Todo) error {
+func (repository *InMemoryTodoRepository) RemoveTodo(id string) error {
+	database := repository.database
 
+	for index, todo := range database {
+		if todo.Id == id {
+			repository.database = append(database[:index], database[index+1:]...)
+			return nil
+		}
+	}
 	return nil
 }
