@@ -12,7 +12,7 @@ func main() {
 	repository := model.InMemoryTodoRepository{}
 	endpoint := web.TodoEndPoint{TodoRepository: &repository}
 
-	initDatabase(repository)
+	initDatabase(&repository)
 
 	router := mux.NewRouter()
 	router.Handle("/todos", endpoint)
@@ -20,10 +20,10 @@ func main() {
 	http.ListenAndServe(":3000", router)
 }
 
-func initDatabase(repository model.InMemoryTodoRepository) {
+func initDatabase(repository *model.InMemoryTodoRepository) {
 	fmt.Println("save a todo")
 
-	repository.SaveTodo(model.Todo{
+	repository.SaveTodo(&model.Todo{
 		Id:      "id",
 		Content: "a content",
 	})

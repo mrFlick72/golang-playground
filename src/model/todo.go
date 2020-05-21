@@ -10,7 +10,7 @@ type Todo struct {
 type TodoRepository interface {
 	GetAllTodo() ([]*Todo, error)
 	GetTodo(id string) (*Todo, error)
-	SaveTodo(todo Todo) error
+	SaveTodo(todo *Todo) error
 	RemoveTodo(id string) error
 }
 
@@ -33,8 +33,8 @@ func (repository *InMemoryTodoRepository) GetTodo(id string) (*Todo, error) {
 	return &Todo{}, errors.New("todo entry do not found")
 }
 
-func (repository *InMemoryTodoRepository) SaveTodo(todo Todo) error {
-	repository.database = append(repository.database, &todo)
+func (repository *InMemoryTodoRepository) SaveTodo(todo *Todo) error {
+	repository.database = append(repository.database, todo)
 	return nil
 }
 

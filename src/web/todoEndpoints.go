@@ -35,7 +35,7 @@ func (endpoint *TodoEndPoint) getAll(w http.ResponseWriter, repository model.Tod
 
 func (endpoint TodoEndPoint) saveATodo(w http.ResponseWriter, r *http.Request, repository model.TodoRepository) {
 	u, _ := decodeRequestAsJSON(r)
-	repository.SaveTodo(u)
+	repository.SaveTodo(&u)
 	w.WriteHeader(http.StatusCreated)
 }
 
