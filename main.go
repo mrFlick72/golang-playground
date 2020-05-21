@@ -9,10 +9,11 @@ import (
 )
 
 func main() {
-	repository := adapter.InMemoryTodoRepository{}
+	inMemoryRepository := adapter.InMemoryTodoRepository{}
+	repository := adapter.MySqlTodoRepository{ConnectionString: "root:root@tcp(localhost)/todo"}
 
 	server := echo.New()
-	initDatabase(&repository)
+	initDatabase(&inMemoryRepository)
 
 	web.Endpoints(server, &repository)
 
