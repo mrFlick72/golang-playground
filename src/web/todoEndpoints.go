@@ -18,14 +18,29 @@ func (endpoint TodoEndPoint) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/todos" {
 		switch r.Method {
 		case http.MethodGet:
-			todos, _ := repository.GetAllTodo()
-			encodeResponseAsJSON(&todos, w)
+			endpoint.getAll(w, repository)
 		case http.MethodPost:
-			u, _ := decodeRequestAsJSON(r)
-			repository.SaveTodo(u)
-			w.WriteHeader(http.StatusCreated)
+			endpoint.saveATodo(w, r, repository)
+
+		case http.MethodDelete:
+			endpoint.deleteATodo(w, r, repository)
 		}
 	}
+}
+
+func (endpoint *TodoEndPoint) getAll(w http.ResponseWriter, repository model.TodoRepository) {
+	todos, _ := repository.GetAllTodo()
+	encodeResponseAsJSON(&todos, w)
+}
+
+func (endpoint TodoEndPoint) saveATodo(w http.ResponseWriter, r *http.Request, repository model.TodoRepository) {
+	u, _ := decodeRequestAsJSON(r)
+	repository.SaveTodo(u)
+	w.WriteHeader(http.StatusCreated)
+}
+
+func (endpoint TodoEndPoint) deleteATodo(w http.ResponseWriter, r *http.Request, repository model.TodoRepository) {
+	//todo	w.WriteHeader(http.StatusCreated)
 }
 
 func HandleEcho(w http.ResponseWriter, r *http.Request) {
