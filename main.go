@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"githab/mrflick72/go-playground/src/adapter"
 	"githab/mrflick72/go-playground/src/model"
 	"githab/mrflick72/go-playground/src/web"
 	"github.com/labstack/echo"
 )
 
 func main() {
-	repository := model.InMemoryTodoRepository{}
+	repository := adapter.InMemoryTodoRepository{}
 
 	server := echo.New()
 	initDatabase(&repository)
@@ -18,11 +19,11 @@ func main() {
 	server.Start(":8000")
 }
 
-func initDatabase(repository *model.InMemoryTodoRepository) {
+func initDatabase(repository *adapter.InMemoryTodoRepository) {
 	fmt.Println("save a todo")
 
 	repository.SaveTodo(&model.Todo{
-		Id:      "id",
+		Id:      1,
 		Content: "a content",
 	})
 	todoList, _ := repository.GetAllTodo()
