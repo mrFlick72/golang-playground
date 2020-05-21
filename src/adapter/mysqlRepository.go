@@ -21,7 +21,7 @@ func (repository *MySqlTodoRepository) GetAllTodo() ([]*model.Todo, error) {
 	rows, err := query.Query()
 	errorLog(err)
 
-	result = buildTodo(rows, result)
+	result = buildTodos(rows, result)
 
 	closeResources(rows, query, database)
 
@@ -29,7 +29,20 @@ func (repository *MySqlTodoRepository) GetAllTodo() ([]*model.Todo, error) {
 }
 
 func (repository *MySqlTodoRepository) GetTodo(id int64) (*model.Todo, error) {
-	return nil, nil
+	var result []*model.Todo
+
+	database, err := sql.Open("mysql", repository.ConnectionString)
+	errorLog(err)
+
+	query, _ := database.Prepare("SELECT id, content FROM TODO WHERE ID=?")
+	rows, err := query.Query(id)
+	errorLog(err)
+
+	result = buildTodos(rows, result)
+
+	closeResources(rows, query, database)
+
+	return result[0], nil
 }
 
 func (repository *MySqlTodoRepository) SaveTodo(todo *model.Todo) error {
@@ -46,7 +59,7 @@ func closeResources(rows *sql.Rows, query *sql.Stmt, database *sql.DB) {
 	defer database.Close()
 }
 
-func buildTodo(rows *sql.Rows, result []*model.Todo) []*model.Todo {
+func buildTodos(rows *sql.Rows, result []*model.Todo) []*model.Todo {
 	for rows.Next() {
 		var id int64
 		var content string
