@@ -14,7 +14,7 @@ type MySqlTodoRepository struct {
 func (repository *MySqlTodoRepository) GetAllTodo() ([]*model.Todo, error) {
 	var result []*model.Todo
 
-	database, err := sql.Open("mysql", repository.ConnectionString)
+	database, err := openConnectionFor(repository)
 	errorLog(err)
 
 	query, _ := database.Prepare("SELECT id, content FROM TODO")
@@ -25,13 +25,13 @@ func (repository *MySqlTodoRepository) GetAllTodo() ([]*model.Todo, error) {
 
 	closeResources(rows, query, database)
 
-	return result, nil
+	return result, err
 }
 
 func (repository *MySqlTodoRepository) GetTodo(id int64) (*model.Todo, error) {
 	var result []*model.Todo
 
-	database, err := sql.Open("mysql", repository.ConnectionString)
+	database, err := openConnectionFor(repository)
 	errorLog(err)
 
 	query, _ := database.Prepare("SELECT id, content FROM TODO WHERE ID=?")
@@ -42,11 +42,11 @@ func (repository *MySqlTodoRepository) GetTodo(id int64) (*model.Todo, error) {
 
 	closeResources(rows, query, database)
 
-	return result[0], nil
+	return result[0], err
 }
 
 func (repository *MySqlTodoRepository) SaveTodo(todo *model.Todo) error {
-	database, err := sql.Open("mysql", repository.ConnectionString)
+	database, err := openConnectionFor(repository)
 	errorLog(err)
 
 	query, _ := database.Prepare("INSERT into TODO (id, content) VALUES (?, ?)")
@@ -55,11 +55,11 @@ func (repository *MySqlTodoRepository) SaveTodo(todo *model.Todo) error {
 
 	closeResources(rows, query, database)
 
-	return nil
+	return err
 }
 
 func (repository *MySqlTodoRepository) RemoveTodo(id int64) error {
-	database, err := sql.Open("mysql", repository.ConnectionString)
+	database, err := openConnectionFor(repository)
 	errorLog(err)
 
 	query, _ := database.Prepare("DELETE FROM TODO WHERE id=?")
@@ -68,7 +68,11 @@ func (repository *MySqlTodoRepository) RemoveTodo(id int64) error {
 
 	closeResources(rows, query, database)
 
-	return nil
+	return err
+}
+
+func openConnectionFor(repository *MySqlTodoRepository) (*sql.DB, error) {
+	return sql.Open("mysql", repository.ConnectionString)
 }
 
 func closeResources(rows *sql.Rows, query *sql.Stmt, database *sql.DB) {
